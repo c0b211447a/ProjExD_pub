@@ -2,14 +2,14 @@ import random
 
 def shutudai():
     qa = random.choice(qa_list)
-    print("じゃじゃん",qa["q"])
+    print("じゃじゃん！！",qa["q"])
     return qa["a"]
 
 def kaito(a_list):
     kai = input("答えを入力して下さい：")
     print("入力した答えは：", kai)
     if kai in a_list:
-        print("正解です。")
+        print("正解です。。。")
     else:
         print("不正解です。")
 
