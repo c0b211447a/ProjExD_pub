@@ -5,7 +5,7 @@ def shutudai():
     print("じゃじゃん",qa["q"])
     return qa["a"]
 
-def kaito():
+def kaito(a_list):
     kai = input("答えを入力して下さい：")
     print("入力した答えは：", kai)
     if kai in a_list:
