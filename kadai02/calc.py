@@ -30,7 +30,7 @@ def one_clear_click(event):
     entry.insert(tk.END, eqn[:-1])
 
 root = tk.Tk()
-root.geometry("300x450")
+root.geometry("300x500")
 
 entry = tk.Entry(root, 
                 justify="right", 
