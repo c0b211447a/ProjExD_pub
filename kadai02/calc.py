@@ -1,92 +1,79 @@
+import math
 import tkinter as tk
 import tkinter.messagebox as tkm
-if __name__ == '__main__':
-    root = tk.Tk()
-    root.geometry('300x450')
-    button_list = []
-    r=5
-    c=3
-    def button_click(event):
-        btn = event.widget
-        entry.insert(tk.END, btn['text'])
-    def evel(event):
-        lit = entry.get()
-        ans = 0
-        if '+' in lit:
-            nums = lit.split('+')
-            for i in nums:
-                ans += int(i)
 
-        if '-' in lit:
-            nums = lit.split('-')
-            for i in nums:
-                ans -= int(i)
-        entry.delete(0, tk.END)
-        entry.insert(tk.END, str(ans))
+def button_click(event):
+    button = event.widget
+    nun = button["text"]
+    entry.insert(tk.END, nun)
+   
+def equal_click(event):
+    eqn = entry.get()
+    res = eval(eqn)
+    entry.delete(0, tk.END)
+    entry.insert(tk.END,str(res))
+
+def sqrt_click(event):
+    button = event.widget
+    eqn = entry.get()
+    res = math.sqrt(eval(eqn))
+    entry.delete(0, tk.END)
+    entry.insert(tk.END, res)
 
 
-    def b_clear(event):
-        new = entry.get()
-        entry.delete(0, tk.END)
-        entry.insert(tk.END, new[:-1])
+def all_clear_click(event):
+    entry.delete(0, tk.END)
 
-    def b_aclear(event):
-        entry.delete(0, tk.END)   
+def one_clear_click(event):
+    eqn = entry.get()
+    entry.delete(0, tk.END)
+    entry.insert(tk.END, eqn[:-1])
 
-    entry = tk.Entry(width=10,
-                    justify='right',
-                    font=('Times New Roman', 40)
-                    )
-    entry.grid(column=0, row=0, columnspan=4, rowspan=1)
-    for i in range(10):
-        button = tk.Button(root, text=i,
-                            font=('Times New Roman', 30)
-                            )
-        
-        if r == 5:
-            c = 0
-            button.grid(row = r, column=c, padx=0, pady=0)
-            button_list.append(button)
-            r -= 1
-            c = 2
-            continue
-        if c == 0:
-            button.grid(row = r, column=c, padx=0, pady=0)
-            button_list.append(button)
-            r -= 1
-            c = 2
-            continue
-        
-        button.grid(row=r, column=c, padx=0, pady=0)
-        button_list.append(button)
-        c -= 1
+root = tk.Tk()
+root.geometry("300x500")
+
+entry = tk.Entry(root, 
+                justify="right", 
+                width=10,
+                font=("Times New Roman", 40))
+entry.grid(row=0, column=0, columnspan=4)
+
+r , c = 1, 1
+for i,num in enumerate([7,8,9,4,5,6,1,2,3,"+",0], 1):
+    button = tk.Button(root, text=num, font=("Times New Roman", 20))
+    button.grid(row=r, column = c, padx=10, pady=0)
+    button.bind("<1>", button_click)
+    if i%3 == 0:
+        r += 1
+        c = 0
+    c += 1
     
-    for i in button_list:
-        i.bind('<1>', button_click)
-    
-    button_plus = tk.Button(root, text='+',
-                            font=('Times New Roman', 30)
-                            )
-    button_plus.bind('<1>', button_click)
-    
-    button_plus.grid(row=5, column=1, padx=0, pady=0)
-    button_equal = tk.Button(root, text='=',
-                            font=('Times New Roman', 30)
-                            )
-    button_equal.bind('<1>', evel)
-    button_equal.grid(row=5, column=2)
+button = tk.Button(root, 
+                  text="=", 
+                  font=("Times New Roman", 20)
+                  )
+button.grid(row=r, column = c, padx=10, pady=10)
+button.bind("<1>", equal_click)
 
-    button_clear = tk.Button(root, text='C',
-                            font=('Times New Roman', 30)
-                            )
-    button_clear.bind('<1>', b_clear)
-    button_clear.grid(row=5, column=3)
+button = tk.Button(root, 
+                  text="c", 
+                  font=("Times New Roman", 20)
+                  )
+button.grid(row=r + 1, column = c, padx=10, pady=10)
+button.bind("<1>", one_clear_click)
 
-    button_aclear = tk.Button(root, text='AC',
-                            font=('Times New Roman', 30)
-                            )
-    button_aclear.bind('<1>', b_aclear)
-    button_aclear.grid(row=4, column=3)
+button = tk.Button(root, 
+                  text="ac", 
+                  font=("Times New Roman", 20)
+                  )
+button.grid(row=r + 1, column = c - 1, padx=10, pady=10)
+button.bind("<1>", all_clear_click)
 
-    root.mainloop() 
-0 comments on commit 85b78e4
+button = tk.Button(root, 
+                  text="√", 
+                  font=("Times New Roman", 20)
+                  )
+button.grid(row=r + 1, column = c - 2, padx=10, pady=10)
+button.bind("<1>", sqrt_click)
+
+root.mainloop()
