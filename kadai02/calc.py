@@ -4,8 +4,8 @@ import tkinter.messagebox as tkm
 
 def button_click(event):
     button = event.widget
-    num = button["text"]
-    entry.insert(tk.END, num)
+    nun = button["text"]
+    entry.insert(tk.END, nun)
    
 def equal_click(event):
     eqn = entry.get()
