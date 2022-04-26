@@ -7,6 +7,12 @@ def button_click(event):
     num = button["text"]
     entry.insert(tk.END, num)
 
+def equal_click(event):
+    eqn = entry.get()
+    res = eval(eqn)
+    entry.delete(0, tk.END)
+    entry.insert(tk.END,str(res))
+
 root = tk.Tk()
 root.geometry("300x450")
 
@@ -17,7 +23,7 @@ entry = tk.Entry(root,
 entry.grid(row=0, column=0, columnspan=4)
 
 r , c = 1, 1
-for i,num in enumerate(range(9,-1,-1), 1):
+for i,num in enumerate([9,8,7,6,5,4,3,2,1,0,"+"], 1):
     button = tk.Button(root, text=num, font=("Times New Roman", 30))
     button.grid(row=r, column = c, padx=10, pady=10)
     button.bind("<1>", button_click)
@@ -25,8 +31,12 @@ for i,num in enumerate(range(9,-1,-1), 1):
         r += 1
         c = 0
     c += 1
-    button.grid()
-
-
+    
+button = tk.Button(root, 
+                  text="=", 
+                  font=("Times New Roman", 30)
+                  )
+button.grid(row=r, column = c, padx=10, pady=10)
+button.bind("<1>", equal_click)
 
 root.mainloop()
