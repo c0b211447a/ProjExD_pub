@@ -41,7 +41,7 @@ entry.grid(row=0, column=0, columnspan=4)
 r , c = 1, 1
 for i,num in enumerate([7,8,9,4,5,6,1,2,3,"+",0], 1):
     button = tk.Button(root, text=num, font=("Times New Roman", 20))
-    button.grid(row=r, column = c, padx=10, pady=10)
+    button.grid(row=r, column = c, padx=10, pady=0)
     button.bind("<1>", button_click)
     if i%3 == 0:
         r += 1
