@@ -1,40 +1,33 @@
-import tkinter as tk
+import random
 
-def key_down(event):
-    global key
-    key = event.keysym
+def make_maze(yoko, tate):
+    XP = [ 0, 1, 0, -1]
+    YP = [-1, 0, 1,  0]
 
-def key_up(event):
-    global key
-    key =""
+    maze_lst = []
+    for y in range(tate):
+        maze_lst.append([0]*yoko)
+    for x in range(yoko):
+        maze_lst[0][x] = 1
+        maze_lst[tate-1][x] = 1
+    for y in range(1, tate-1):
+        maze_lst[y][0] = 1
+        maze_lst[y][yoko-1] = 1
+    for y in range(2, tate-2, 2):
+        for x in range(2, yoko-2, 2):
+            maze_lst[y][x] = 1
+    for y in range(2, tate-2, 2):
+        for x in range(2, yoko-2, 2):
+            if x > 2: rnd = random.randint(0, 2)
+            else:     rnd = random.randint(0, 3)
+            maze_lst[y+YP[rnd]][x+XP[rnd]] = 1
 
-def main_proc():
-    global cx, cy, key
-    if key == "Up":
-        cy -= 20
-    if key == "Down":
-        cy += 20
-    if key == "Right":
-        cx += 20
-    if key == "Left":
-        cx -= 20
-    canvas.coords("tori", cx, cy)
-    root.after(100, main_proc)
+    return maze_lst
 
-if __name__ == "__main__":
-    root = tk.Tk()
-    root.title("迷えるこうかとん")
-
-    canvas = tk.Canvas(root, width=1500, height=900, bg="black")
-    canvas.pack()
-
-    tori = tk.PhotoImage(file="fig/7.png")
-    cx, cy = 300, 400
-    canvas.create_image(cx, cy, image=tori, tag="tori")
-    
-    key = ""
-    root.bind("<KeyPress>", key_down)
-    root.bind("<KeyRelease>", key_up)
-
-    root.after(100, main_proc)
-    root.mainloop()
+def show_maze(canvas, maze_lst):
+    color = ["white", "gray"]
+    for y in range(len(maze_lst)):
+        for x in range(len(maze_lst[y])):
+            canvas.create_rectangle(x*100, y*100, x*100+100, y*100+100, 
+                                    fill=color[maze_lst[y][x]])
+   
