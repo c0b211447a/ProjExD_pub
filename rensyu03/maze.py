@@ -10,13 +10,13 @@ def key_down(event):
 def key_up(event):
     global key
     key =""
-
+#clickボタン関数
 def btn_click():
 	global index
 	index=(index+1) % len(photos)
 	canvas.delete('tori')	
 	canvas.create_image(cx,cy,image=photos[index],tag='tori')
-
+#こうかとんの壁判定
 def main_proc():
     global cx, cy, mx, my, key
     delta = {
@@ -43,7 +43,7 @@ if __name__ == "__main__":
     canvas.pack()
 
     maze_bg = mm.make_maze(15, 9) #壁:1床:0の二次元リストを表す
-    mm.show_maze(canvas, maze_bg)
+    mm.show_maze(canvas, maze_bg)#迷路を表示
 
     photos=[
         tk.PhotoImage(file="fig/0.png"),
@@ -59,10 +59,10 @@ if __name__ == "__main__":
         ]
 
     mx, my = 1, 1
-    cx, cy = 100*mx + 50, 100*my + 50
-    canvas.create_image(cx, cy, image=photos[index], tag="tori")
-    btn=tk.Button(text = "Click",command=btn_click)
-    btn.pack(ipadx=10, ipady=5)
+    cx, cy = 100*mx + 50, 100*my + 50#初期位置を設定
+    canvas.create_image(cx, cy, image=photos[index], tag="tori")#こうかとんを表示
+    btn=tk.Button(text ="Click",command=btn_click)
+    btn.pack(ipadx=10,ipady=5)
 
     key = ""
     root.bind("<KeyPress>", key_down)
