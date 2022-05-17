@@ -1,6 +1,4 @@
-from re import X
-from this import d
-from turtle import width
+
 import pygame as pg
 import sys
 import random 
@@ -71,7 +69,7 @@ def main():
         if tori_rect.colliderect(bomb_rect): #こうかとん用rectが爆弾用rectと衝突していたらreturn
                 size *= 1.1
                 tori_img = pg.image.load("fig/3.png")      #こうかとん画像用のsurface
-                tori_img = pg.transform.rotozoom(tori_img, 0, size)
+                tori_img = pg.transform.rotozoom(tori_img, 0, size)#大きくする
                 tori_rect= tori_img.get_rect()             #こうかとん画像用のrect
                 tori_rect.centerx =  random.randint(0,sc_rect.width)
                 tori_rect.centery =  random.randint(0,sc_rect.height)               #こうかとん画像の中心座標を設定する
