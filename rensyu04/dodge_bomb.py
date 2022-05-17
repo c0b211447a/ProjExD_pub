@@ -74,6 +74,7 @@ def main():
                 tori_rect.centerx =  random.randint(0,sc_rect.width)
                 tori_rect.centery =  random.randint(0,sc_rect.height)               #こうかとん画像の中心座標を設定する
                 screen.blit(tori_img, tori_rect)
+                if size > 8: return
                 
             
             
