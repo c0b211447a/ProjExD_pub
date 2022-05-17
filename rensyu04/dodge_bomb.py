@@ -1,3 +1,4 @@
+from re import X
 import pygame as pg
 import sys
 import random 
@@ -23,19 +24,19 @@ def main():
     tori_img = pg.image.load("fig/3.png")      #こうかとん画像用のsurface
     tori_img = pg.transform.rotozoom(tori_img, 0, 2.0)
     tori_rect= tori_img.get_rect()             #こうかとん画像用のrect
-    tori_rect.center = 800, 450                #こうかとん画像の中心座標を設定する
+    tori_rect.center = 900, 400                #こうかとん画像の中心座標を設定する
     screen.blit(tori_img, tori_rect)
 
     #練習５
-    bomb = pg.Surface((20,20))
-    bomb.set_colorkey((0,0,0))
-    pg.draw.circle(bomb, (255, 0, 0), (10,10), 10)
-    bomb_rect = bomb.get_rect()
+    bomb = pg.Surface((20,20))                            #爆弾用surface
+    bomb.set_colorkey((0,0,0))                            #黒色部分を透過
+    pg.draw.circle(bomb, (255, 0, 0), (10,10), 10)        #爆弾用surfaceに円を描く
+    bomb_rect = bomb.get_rect()                           #爆弾用rect
     bomb_rect.centerx = random.randint(0, sc_rect.width)
     bomb_rect.centery = random.randint(0, sc_rect.height)
     screen.blit(bomb, bomb_rect)
-    vx, vy = +1, +1
-
+    vx, vy = +1, +1                          #爆弾用surfaceを画面用surfaceに貼り付ける
+    
     while True:
         #練習２
         screen.blit(bg_img, bg_rect)           #背景画像用surfaceを画面用surfaceに貼り付ける
@@ -48,10 +49,32 @@ def main():
             if key_states[key] == True:
                 tori_rect.centerx += delta[0]
                 tori_rect.centery += delta[1]
+                if check_bound(sc_rect, tori_rect) != (1,1):
+                    tori_rect.centerx -= delta[0]
+                    tori_rect.centery -= delta[1]
         screen.blit(tori_img, tori_rect)
+        
+        #練習６
+        print(vx,vy)
+        bomb_rect.move_ip(vx, vy)
+        screen.blit(bomb, bomb_rect)
+        #練習７
+        x, y = check_bound(sc_rect, bomb_rect)
+        vx *= x #横方向に画面外なら、横方向速度の符号反転
+        vy *= y #縦方向に画面外なら、縦方向速度の符号反転
+
+        #練習８
+        if tori_rect.colliderect(bomb_rect): return #こうかとん用rectが爆弾用rectと衝突していたらreturn
 
         pg.display.update() #画面の更新
         clock.tick(1000)
+
+def check_bound(sc_r, obj_r): #画面用rect,｛こうかとん、爆弾｝rect
+    #画面内なら＋1／画面外なら－1
+    x, y = +1, +1
+    if obj_r.left < sc_r.left or sc_r.right < obj_r.right: x = -1
+    if obj_r.top < sc_r.top or sc_r.bottom < obj_r.bottom: y = -1
+    return x,y
 
 if __name__=="__main__":
     pg.init()
