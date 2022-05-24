@@ -1,8 +1,9 @@
-
 import pygame as pg
 import sys
 import random
+import os
 
+main_dir = os.path.split(os.path.abspath(__file__))[0]
 
 class Screen:
     def __init__(self, fn, wh, title):
@@ -13,6 +14,19 @@ class Screen:
         self.disp = pg.display.set_mode((self.width, self.height)) # Surface
         self.rect = self.disp.get_rect()  # Rect
         self.image = pg.image.load(fn)  #Surface
+    
+    def sound(file):
+        if not pg.mixer:
+            return None
+        file = os.path.join(main_dir, "data", file)
+        try:
+             sound = pg.mixer.Sound(file)
+             return sound
+        except pg.error:
+            print("Warning, unable to load, %s" % file)
+        return None
+
+
 
 
 class Bird(pg.sprite.Sprite):
@@ -65,6 +79,15 @@ class Bomb(pg.sprite.Sprite):
 
 def main():
     clock = pg.time.Clock()
+
+    if pg.mixer and not pg.mixer.get_init():
+        print("Warning, no sound")
+        pg.mixer = None
+    
+    if pg.mixer:
+        music = os.path.join(main_dir, "data", "house_lo.wav")
+        pg.mixer.music.load(music)
+        pg.mixer.music.play(-1)
     
     # 練習1
     screen = Screen("fig/pg_bg.jpg", (1600,900), "逃げろ！こうかとん")
