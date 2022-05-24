@@ -6,7 +6,8 @@ import random
 
 class Screen:
     def __init__(self, fn, wh, title):
-        # fn:背景画像のパス, wh:幅高さのタプル, title:画面のタイトル　
+        # fn:背景画像のパス, wh:幅高さのタプル, title:画面のタイトル
+        super().__init__()
         pg.display.set_caption(title)
         self.width, self.height = wh #(1000, 900) タプル
         self.disp = pg.display.set_mode((self.width, self.height)) # Surface
@@ -14,7 +15,7 @@ class Screen:
         self.image = pg.image.load(fn)  #Surface
 
 
-class Bird:
+class Bird(pg.sprite.Sprite):
     key_delta = {pg.K_UP   : [0, -1],
                  pg.K_DOWN : [0, +1],
                  pg.K_LEFT : [-1, 0],
@@ -23,6 +24,7 @@ class Bird:
 
     def __init__(self, fn, r, xy):
         # fn:画像のパス, r:拡大率,　xy:初期位置座標のタプル
+       super().__init__()
        self.image = pg.image.load(fn)  #Surface
        self.image = pg.transform.rotozoom(self.image, 0, r)
        self.rect= self.image.get_rect() 
@@ -40,12 +42,13 @@ class Bird:
                     self.rect.centery -= delta[1]
 
 
-class Bomb:
+class Bomb(pg.sprite.Sprite):
     def __init__(self, color, r, vxy, screen):
         # color:爆弾円の色
         # r:爆弾円の半径
         # vxy:爆弾円の速度のタプル
         # screen:描画用のScreenオブジェト
+        super().__init__()
         self.image = pg.Surface((2*r,2*r)) # 爆弾用のSurface
         self.image.set_colorkey((0,0,0))   # 黒色部分を透過する
         pg.draw.circle(self.image, color, (r,r), r)   # 爆弾用Surfaceに円を描く
