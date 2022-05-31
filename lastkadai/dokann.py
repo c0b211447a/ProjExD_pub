@@ -3,7 +3,7 @@ import sys
 import random 
 
 fps = 1000
-
+dokan = pg.image.load("fig/pg_dokan.jpg")
 
 
 running = True
@@ -37,26 +37,22 @@ class Ball(pg.sprite.Sprite):
             if key_states[key] == True:
                 self.rect.centerx += delta[0]
                 self.rect.centery += delta[1]
-                # 練習7
-class dokann(pg.sprite.Sprite):
-    scroll = 0
-    scroll_sp = 1
 
-    def __init__(self, fn, r, xy):
-        # fn:画像のパス, r:拡大率,　xy:初期位置座標のタプル
-       super().__init__()
-       self.image = pg.image.load(fn)  #Surface
-       self.image = pg.transform.rotozoom(self.image, 0, r)
-       self.rect= self.image.get_rect() 
-       self.rect.center = xy
+class Bomb(pg.sprite.Sprite):
+    def __init__(self, color, r, sikaku, vx, screen):
+        # color:爆弾円の色
+        # r:爆弾円の半径
+        # vxy:爆弾円の速度のタプル
+        # screen:描画用のScreenオブジェト
+        super().__init__()
+        self.image = pg.Surface((2*r,2*r)) # 爆弾用のSurface
+        self.image.set_colorkey((0,0,0))   # 黒色部分を透過する
+        pg.draw.rect(self.image, color, sikaku)   # 爆弾用Surfaceに円を描く
+        self.rect = self.image.get_rect()  # 爆弾用Rect
+        self.vx = vx
 
-       def update(self, screen):
-           for x in range(5): 
-               screen(fn,((x * 1600) - 0 * 0.8, 0))
-         
-
-
-        
+    def update(self, screen):
+        self.rect.move_ip(self.vx,0)      
 
 def main():
     clock = pg.time.Clock()
@@ -70,9 +66,15 @@ def main():
     tori = pg.sprite.Group()
     tori.add(Ball("fig/3.png", 2, (100,400))) 
 
-    dokan = pg.sprite.Group()
-    for p in range(5):
-        dokan.add(dokann("fig/pg_dokan.jpg", 0,(1500,400)))
+    def dokann():
+        rn = random.randint(0,100)
+        bombs = pg.sprite.Group()        
+        for p in range(100):
+            bombs.add(Bomb((255,0,0),100,(20,0,100,rn),(p * 600) - scroll * 1.5, screen))
+        bombs.update(screen)
+        bombs.draw(screen.disp)
+        #for q in range(1000):
+         #   screen.disp.blit(dokan,((q * 700) - scroll * 1, 0))
 
     while True:
         screen.disp.blit(screen.image, screen.rect)
@@ -83,6 +85,8 @@ def main():
         tori.update(screen)
         tori.draw(screen.disp)
 
+
+        dokann()
         scroll += scroll_sp
 
         clock.tick(fps) 
