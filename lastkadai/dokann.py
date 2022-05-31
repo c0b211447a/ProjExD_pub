@@ -4,7 +4,7 @@ import random
 
 fps = 1000
 dokan = pg.image.load("fig/pg_dokan.jpg")
-
+h_list = [100,125,150,175,200,225,250,275,300,325]
 
 running = True
 
@@ -23,12 +23,13 @@ class Ball(pg.sprite.Sprite):
                  pg.K_DOWN : [0, +1],
                 } 
 
-    def __init__(self, fn, r, xy):
+    def __init__(self, color, r, xy):
         # fn:画像のパス, r:拡大率,　xy:初期位置座標のタプル
        super().__init__()
-       self.image = pg.image.load(fn)  #Surface
-       self.image = pg.transform.rotozoom(self.image, 0, r)
-       self.rect= self.image.get_rect() 
+       self.image = pg.Surface((2*r,2*r)) # 爆弾用のSurface
+       self.image.set_colorkey((0,0,0))   # 黒色部分を透過する
+       pg.draw.circle(self.image, color, (r,r), r)   # 爆弾用Surfaceに円を描く
+       self.rect = self.image.get_rect()  # 爆弾用Rect
        self.rect.center = xy
 
     def update(self, screen):
@@ -59,18 +60,17 @@ def main():
     scroll = 0
     scroll_sp = 1
 
-    screen = Screen("fig/pg_bg.jpg", (1600,900), "土管をよけろ！！")
+    screen = Screen("fig/pg_bg.jpg", (1000,500), "土管をよけろ！！")
     screen.disp.blit(screen.image, (0,0))                # 背景画像用Surfaceを画面用Surfaceに貼り付ける
 
 
     tori = pg.sprite.Group()
-    tori.add(Ball("fig/3.png", 2, (100,400))) 
+    tori.add(Ball((255,0,0), 20, (50,250))) 
 
     def dokann():
-        rn = random.randint(0,100)
         bombs = pg.sprite.Group()        
-        for p in range(100):
-            bombs.add(Bomb((255,0,0),100,(20,0,100,rn),(p * 600) - scroll * 1.5, screen))
+        for p in range(10):
+            bombs.add(Bomb((255,0,0),100,(20,0,50,h_list[p]),(p * 600) - scroll * 1.5, screen))
         bombs.update(screen)
         bombs.draw(screen.disp)
         #for q in range(1000):
