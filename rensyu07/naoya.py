@@ -1,10 +1,29 @@
 import pygame as pg
 import sys
 import random
-	@@ -24,10 +25,13 @@ class character1(pg.sprite.Sprite):
+import time
+
+class Screen:
+    def __init__(self, fn, wh):
+        # fn;背景画像のパス、wh;幅と高さのタプル
+
+        super().__init__() #superクラスの初期化
+        self.width, self.height = wh #(1600, 900)などのような情報がｗｈにはタプルとして与えられる想定
+        self.disp = pg.display.set_mode((self.width, self.height)) #surface
+        self.rect = self.disp.get_rect() #Rect
+        self.image = pg.image.load(fn) #Surface
+
+class character1(pg.sprite.Sprite):
+    #キャラクターのクラス
+
+    key_delta = {
+    pg.K_UP:[0, -5],
+    pg.K_DOWN:[0, 5],
+    }
+    #キャラクターの動きが入った辞書
     #上矢印キーを押すと、キャラクターが上に5だけ動く
     #下矢印キーを押すと、キャラクターが下に5だけ動く
-
+        
     def __init__(self, fn, r, xy):
         #fn;キャラクター画像用のパス、r;画像の拡大率、xy;画像の描画位置が入ったタプル
         super().__init__() #superクラスの初期化
@@ -12,7 +31,25 @@ import random
         self.image = pg.transform.rotozoom(self.image, 0, r) #キャラクターの画像の拡大率をrに設定する
         self.image = pg.transform.flip(self.image, True, False) #キャラクターの画像を左右反転させる
         self.rect = self.image.get_rect() #キャラクターのRectを取得する
-	@@ -53,13 +57,14 @@ def __init__(self, fn, xy, y_list, index_num):
+        self.rect.center = xy #キャラクターの中心座標をxyに設定する
+
+    def update(self, screen):
+        #screen;更新するscreen
+        key_states = pg.key.get_pressed() #押されたなんかしらのキーをkey_statesで保持
+        for key, delta in character1.key_delta.items(): #chracter1クラスの辞書key_deltaのキーをkeyに、バリューをdeltaに保持
+            if key_states[key] == True: #key_statesの中のkeyがTrueの時
+                self.rect.centerx += delta[0] #キャラクターのx座標をdelta[0]だけ更新する
+                self.rect.centery += delta[1] #キャラクターのy座標をdelta[1]だけ更新する
+                
+                if check_bound(screen.rect, self.rect) != (1, 1): #もし壁と接触していたら
+                    self.rect.centerx -= delta[0] #キャラクターのx座標を-delta[0]だけ更新する
+                    self.rect.centery -= delta[1] #キャラクターのy座標を-delta[1]だけ更新する
+                    
+class knife_under(pg.sprite.Sprite):
+    #画面下側のナイフを生成するためのクラス
+
+    def __init__(self, fn, xy, y_list, index_num):
+        #fn;ナイフの画像パス、xy;ナイフを描画する位置が入ったタプル、y_list;ナイフ画像の高さを表す数値が入ったリスト、
         #index_num;y_listの中からランダムで数値を取り出すためのインデックス番号
         super().__init__() #superクラスの初期化
         self.image = pg.image.load(fn) #画面下側のナイフのSurface
@@ -26,7 +63,14 @@ import random
 
 class knife_top(pg.sprite.Sprite):
     #画面上側のナイフを作成するクラス
-	@@ -74,8 +79,8 @@ def __init__(self, fn, xy, y_list, index_num):
+
+    def __init__(self, fn, xy, y_list, index_num):
+        #fn;ナイフの画像パス、xy;ナイフを描画する位置が入ったタプル、y_list;ナイフ画像の高さを表す数値が入ったリスト、
+        #index_num;y_listの中からランダムで数値を取り出すためのインデックス番号
+        super().__init__() #superクラスの初期化
+        self.image = pg.image.load(fn) #画面上側のナイフのSurface
+        self.image = pg.transform.scale(self.image, (150, y_list[index_num])) #画面上側のナイフの幅を150、高さをy_list[index_num]にする
+        self.image = pg.transform.flip(self.image, False, True)
         self.rect = self.image.get_rect() #画面上側のナイフのRect
         self.rect.midtop = xy #ナイフ画像の上端真ん中んの座標をxyに設定する
 
@@ -35,7 +79,13 @@ class knife_top(pg.sprite.Sprite):
 
 def check_bound(sc_r, obj_r): 
     #画面内;+1/画面外;-1
-	@@ -89,14 +94,15 @@ def main():
+    x, y = +1, +1                #Rect, Rect
+    if obj_r.left < sc_r.left or sc_r.right < obj_r.right: x = -1 #画面外
+    if obj_r.top < sc_r.top or sc_r.bottom < obj_r.bottom: y = -1 #画面外
+    return x, y
+
+def main():
+
     count = 0 #ループを行った回数を保持する変数count
     chr_count = 3 #キャラクターのライフを表す変数chr_count
     distance = 0 #こうかとんが調理されるまでに耐え抜いた距離
@@ -50,10 +100,16 @@ def check_bound(sc_r, obj_r):
     pg.display.set_caption("Let's cook KOUKATON!!") #ウィンドウのタイトルを'Let's cook KOUKATON!!'にする
 
     while rand_flg: #rand_flgがTrueの間
-	@@ -110,11 +116,12 @@ def main():
+        k_yu = random.randint(0, 900) #下側ナイフの高さの候補を保持する変数k_yu
+        k_yt = random.randint(0, 900) #上側ナイフの高さの候補を保持する変数k_yt
+
+        if k_yu + k_yt  == 650:#k_yuとk_ytの和が650すなわち上と下のナイフの間隔が250なら
+            y_kulist.append(k_yu) #y_kulistにk_yuを加える
+            y_ktlist.append(k_yt) #y_ktlistにk_ytを加える
+
         if len(y_kulist) == 20: #y_kulistの要素数が20になったら
             rand_flg = False #rand_flgをFalseにする
-
+        
     screen = Screen('fig/pg_bg.jpg', (1600, 900)) #画面用のSurfaceを保持する変数screen
     screen.disp.blit(screen.image, screen.rect)   #背景画像用のSurfaceを画面用Surfaceに張り付けるイメージ 
 
@@ -62,7 +118,8 @@ def check_bound(sc_r, obj_r):
 
     knife1 = pg.sprite.Group() #下側ナイフのspriteを保持するGroup、knife1
 
-	@@ -123,7 +130,6 @@ def main():
+    knife2 = pg.sprite.Group() #上側ナイフのspriteを保持するGroup、knife2
+
     font = pg.font.Font(None, 80) #画面に描画する文字のフォント情報を保持した変数font。今回の場合だと、標準フォント、サイズ80
     txt = font.render("Press 1 Let's eat!!", True, (0, 0, 0)) #描画する文字の文字と色を保持した変数txt。今回の場合だと、'Press 1 Let's eat!!'を黑で描画する
     screen.disp.blit(txt, (1600/2-300, 900/2)) #txtを(1600/2-300, 900/2)に描画する
@@ -70,7 +127,17 @@ def check_bound(sc_r, obj_r):
     while True:
         index_num = random.randint(0, 19) #knifeの高さの組み合わせをランダムに決めるインデックス番号を保持した変数index_num
         screen.disp.blit(screen.image, screen.rect) #背景画像用のSurfaceを画面用Surfaceに張り付けるイメージ 
-	@@ -141,18 +147,18 @@ def main():
+
+        if score_flg == False: #score_flgがFalseなら
+            txt = font.render("Press 1 Let's eat!!", True, (0, 0, 0)) #"Press 1 Let's eat!!"を黑で描画するという情報を保持した変数txt
+            screen.disp.blit(txt, (1600/2-250, 900/2)) #txtを(1600/2-250, 900/2)に描画する
+
+        key_states = pg.key.get_pressed() #キーの情報を保持する変数key_states
+
+        if tori_flg: #tori_flgがTrueなら
+
+            tori.update(screen) #toriグループのsprite情報を更新する
+            tori.draw(screen.disp) #toriグループをdrawする
 
         if knife_flg: #knife_flgがTrueなら
             if count % 250 == 0: #countが250進むごとに
@@ -89,7 +156,14 @@ def check_bound(sc_r, obj_r):
             knife2.draw(screen.disp) #knife2グループをdrawする
 
         for event in pg.event.get(): #変数eventになにかしらのeventを保持する
-	@@ -167,39 +173,43 @@ def main():
+            if event.type == pg.QUIT: #eventのtypeが「QUITが押された」なら
+                pg.quit()
+                sys.exit()
+                #処理を終了させる
+
+        if key_states[pg.K_1]: #key_statesの中の「1が押された」がTrueなら
+            tori_flg = True #tori_flgをtrueにする
+            knife_flg = True #knife_flgをtrueにする
             score_flg = True #score_flgをtrueにする
 
         if score_flg: #score_flgがTrueなら
@@ -112,14 +186,19 @@ def check_bound(sc_r, obj_r):
                 tori_flg = False #tori_flgをFalseにする
                 knife_flg = False #knife_flgをFalseにする
                 txt = font.render(f'SCORE:{distance}m', True, (0, 0, 0)) #'SCORE:{distance}m'を黑で描画するという情報を保持した変数txt
+                ctm = font.render(f'TimeSCORE:{int(count_ms/1000)//3600}m{int(count_ms/1000)%60}s', True, (0, 0, 0)) #'{count_ms}'を黑で描写するという情報を保持した変数ctm
                 screen.disp.blit(txt, (1600/2-250, 900/2-25)) #txtを位置(1600/2-250, 900/2-25)に描画する
+                screen.disp.blit(ctm, (1600/2-250, 900/2-75)) #ctmを位置(1600/2-250, 900/2-75)に描画する
                 txt = font.render('Press SPACE to restart', True, (0, 0, 0)) #'Press SPACE to restart'を黑で描画するという情報を保持した変数txt
                 screen.disp.blit(txt, (1600/2-250, 900/2+25)) #txtを位置(1600/2-250, 900/2+25)に描画する
                 if key_states[pg.K_SPACE]: #もしkey_statesの中の「スペースキーが押された」がTrueなら
                     main() #ゲームをリセットして再スタートする
             else: #キャラクターのライフが0以外の時
+                count_ms = pg.time.get_ticks() #ゲームオーバーになるまでのミリ秒単位の経過時間
                 txt = font.render(f'{distance}m', True, (0, 0, 0)) #'{distance}m'を黑で描写するという情報を保持した変数txt
-                screen.disp.blit(txt, (50, 50)) #txtを位置(50, 50)に描画する          
+                ctm = font.render(f'{int (count_ms/1000)//3600}m{int(count_ms/1000)%60}s', True, (0, 0, 0)) #'{count_ms}'を黑で描写するという情報を保持した変数ctm
+                screen.disp.blit(txt, (50, 50)) #txtを位置(50, 50)に描画する
+                screen.disp.blit(ctm, (50, 0)) #txtを位置(50, 50)に描画する          
                 distance += 1 #distanceを1だけ増やす
 
             count += 1 #countを1だけ増やす
