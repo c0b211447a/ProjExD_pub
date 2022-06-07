@@ -135,7 +135,6 @@ def main():
         key_states = pg.key.get_pressed() #キーの情報を保持する変数key_states
 
         if tori_flg: #tori_flgがTrueなら
-
             tori.update(screen) #toriグループのsprite情報を更新する
             tori.draw(screen.disp) #toriグループをdrawする
 
