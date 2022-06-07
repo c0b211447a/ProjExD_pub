@@ -5,7 +5,7 @@ import random
 import time
 import tkinter as tk
 
-root = tk.Tk()
+root = tk.Tk() #荒井敬太
 root.geometry('1600x900')
 
 label = tk.Label(root, text = "こうかとんを調理しよう！",
