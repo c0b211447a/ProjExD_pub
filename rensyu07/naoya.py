@@ -188,7 +188,7 @@ def main():
                 knife_flg = False #knife_flgをFalseにする
                 distances.append(distance)
                 txt = font.render(f'BESTSCORE:{max(distances)}m', True, (0, 0, 0)) #'SCORE:{distance}m'を黑で描画するという情報を保持した変数txt
-                screen.disp.blit(txt, (1600/2-250, 900/2-75)) #txtを位置(1600/2-250, 900/2-125)に描画する
+                screen.disp.blit(txt, (1600/2-250, 900/2-125)) #txtを位置(1600/2-250, 900/2-125)に描画する
                 txt = font.render(f'SCORE:{distance}m', True, (0, 0, 0)) #'SCORE:{distance}m'を黑で描画するという情報を保持した変数txt
                 ctm = font.render(f'TimeSCORE:{int(count_ms/1000)//3600}m{int(count_ms/1000)%60}s', True, (0, 0, 0)) #'{count_ms}'を黑で描写するという情報を保持した変数ctm
                 screen.disp.blit(txt, (1600/2-250, 900/2-25)) #txtを位置(1600/2-250, 900/2-25)に描画する
