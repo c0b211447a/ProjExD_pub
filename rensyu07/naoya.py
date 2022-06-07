@@ -75,7 +75,7 @@ class knife_top(pg.sprite.Sprite):
         self.rect.midtop = xy #ナイフ画像の上端真ん中んの座標をxyに設定する
 
     def update(self, screen):
-        self.rect.centerx -= 2.5 #ナイフのx座標を-2.5だけ更新する
+        self.rect.centerx -= random.randint(2, 3) #ナイフのx座標を-2.5だけ更新する
 
 def check_bound(sc_r, obj_r): 
     #画面内;+1/画面外;-1
