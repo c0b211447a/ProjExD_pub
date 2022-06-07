@@ -57,9 +57,9 @@ class knife_under(pg.sprite.Sprite):
         self.rect = self.image.get_rect() #画面下側のナイフのRect
         self.rect.midbottom = xy #ナイフ画像の下端真ん中んの座標をxyに設定する
 
-    def update(self, screen):
+    def update(self, screen,x):
         #screen;更新するscreen
-        self.rect.centerx -= 2.5 #ナイフのx座標を-2.5だけ更新する
+        self.rect.centerx -= 1.5+x/3000 #ナイフのx座標を-2.5だけ更新する
 
 class knife_top(pg.sprite.Sprite):
     #画面上側のナイフを作成するクラス
@@ -74,8 +74,8 @@ class knife_top(pg.sprite.Sprite):
         self.rect = self.image.get_rect() #画面上側のナイフのRect
         self.rect.midtop = xy #ナイフ画像の上端真ん中んの座標をxyに設定する
 
-    def update(self, screen):
-        self.rect.centerx -= random.randint(2, 3) #ナイフのx座標を-2.5だけ更新する
+    def update(self, screen,x):
+        self.rect.centerx -= 1.5+x/3000 #ナイフのx座標を-2.5だけ更新する
 
 def check_bound(sc_r, obj_r): 
     #画面内;+1/画面外;-1
@@ -96,6 +96,7 @@ def main():
     tori_flg = False #キャラクターのインスタンスを作成する処理のフラグtori_flg
     knife_flg = False #上下のナイフのインスタンスを作成する処理のフラグknife_flg
     score_flg = False #最終スコアを表示するための処理をするフラグscore_flg
+    distances=[]
 
     pg.display.set_caption("Let's cook KOUKATON!!") #ウィンドウのタイトルを'Let's cook KOUKATON!!'にする
 
@@ -135,6 +136,7 @@ def main():
         key_states = pg.key.get_pressed() #キーの情報を保持する変数key_states
 
         if tori_flg: #tori_flgがTrueなら
+
             tori.update(screen) #toriグループのsprite情報を更新する
             tori.draw(screen.disp) #toriグループをdrawする
 
@@ -148,10 +150,10 @@ def main():
                 knife2.remove(4) #knife2のなかのspriteを4つ削除する
                 count = 0 #countを0にする
 
-            knife1.update(screen) #knife1グループのsprite情報を更新する
+            knife1.update(screen,distance) #knife1グループのsprite情報を更新する
             knife1.draw(screen.disp) #knife1グループをdrawする
 
-            knife2.update(screen) #knife2グループのsprite情報を更新する
+            knife2.update(screen,distance) #knife2グループのsprite情報を更新する
             knife2.draw(screen.disp) #knife2グループをdrawする
 
         for event in pg.event.get(): #変数eventになにかしらのeventを保持する
@@ -184,6 +186,9 @@ def main():
             if chr_count == 0: #キャラクターのライフが0のとき
                 tori_flg = False #tori_flgをFalseにする
                 knife_flg = False #knife_flgをFalseにする
+                distances.append(distance)
+                txt = font.render(f'BESTSCORE:{max(distances)}m', True, (0, 0, 0)) #'SCORE:{distance}m'を黑で描画するという情報を保持した変数txt
+                screen.disp.blit(txt, (1600/2-250, 900/2-75)) #txtを位置(1600/2-250, 900/2-125)に描画する
                 txt = font.render(f'SCORE:{distance}m', True, (0, 0, 0)) #'SCORE:{distance}m'を黑で描画するという情報を保持した変数txt
                 ctm = font.render(f'TimeSCORE:{int(count_ms/1000)//3600}m{int(count_ms/1000)%60}s', True, (0, 0, 0)) #'{count_ms}'を黑で描写するという情報を保持した変数ctm
                 screen.disp.blit(txt, (1600/2-250, 900/2-25)) #txtを位置(1600/2-250, 900/2-25)に描画する
