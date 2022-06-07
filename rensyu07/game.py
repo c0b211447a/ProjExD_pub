@@ -180,7 +180,9 @@ def main():
                 tori_flg = False #tori_flgをFalseにする
                 knife_flg = False #knife_flgをFalseにする
                 txt = font.render(f'SCORE:{distance}m', True, (0, 0, 0)) #'SCORE:{distance}m'を黑で描画するという情報を保持した変数txt
+                ctm = font.render(f'TimeSCORE:{int(count_ms/1000)//3600}m{int(count_ms/1000)%60}s', True, (0, 0, 0)) #'{count_ms}'を黑で描写するという情報を保持した変数ctm
                 screen.disp.blit(txt, (1600/2-250, 900/2-25)) #txtを位置(1600/2-250, 900/2-25)に描画する
+                screen.disp.blit(ctm, (1600/2-250, 900/2-75)) #ctmを位置(1600/2-250, 900/2-75)に描画する
                 txt = font.render('Press SPACE to restart', True, (0, 0, 0)) #'Press SPACE to restart'を黑で描画するという情報を保持した変数txt
                 screen.disp.blit(txt, (1600/2-250, 900/2+25)) #txtを位置(1600/2-250, 900/2+25)に描画する
 
@@ -188,8 +190,11 @@ def main():
                     main() #ゲームをリセットして再スタートする
 
             else: #キャラクターのライフが0以外の時
+                count_ms = pg.time.get_ticks() #ゲームオーバーになるまでのミリ秒単位の経過時間
                 txt = font.render(f'{distance}m', True, (0, 0, 0)) #'{distance}m'を黑で描写するという情報を保持した変数txt
-                screen.disp.blit(txt, (50, 50)) #txtを位置(50, 50)に描画する          
+                ctm = font.render(f'{int (count_ms/1000)//3600}m{int(count_ms/1000)%60}s', True, (0, 0, 0)) #'{count_ms}'を黑で描写するという情報を保持した変数ctm
+                screen.disp.blit(txt, (50, 50)) #txtを位置(50, 50)に描画する
+                screen.disp.blit(ctm, (50, 0)) #txtを位置(50, 50)に描画する          
                 distance += 1 #distanceを1だけ増やす
 
             count += 1 #countを1だけ増やす
