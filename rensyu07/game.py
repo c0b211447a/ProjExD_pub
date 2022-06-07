@@ -1,7 +1,29 @@
+from ast import Num
 import pygame as pg
 import sys
 import random
 import time
+import tkinter as tk
+
+root = tk.Tk()
+root.geometry('1600x900')
+
+label = tk.Label(root, text = "こうかとんを調理しよう！",
+                 font = ("", 40), bg ="#faaaff")
+
+label.pack(pady = 10)
+
+message = tk.Message(root, text = "こうかとんは3回包丁に当たると死ぬよ！",
+                     font = ("", 45), bg = "#aafafa")
+
+start = tk.Message(root, text = "次の画面で1を押したらスタートするよ！",
+                 font = ("", 40), bg = "#ffaaff")
+start.pack(pady = 30)
+message.pack()
+
+root.mainloop()
+
+
 
 class Screen:
     def __init__(self, fn, wh):
@@ -64,7 +86,7 @@ class knife_under(pg.sprite.Sprite):
 class knife_top(pg.sprite.Sprite):
     #画面上側のナイフを作成するクラス
 
-    def __init__(self, fn, xy, y_list, index_num):
+    def __init__(self, fn, xy, y_list, index_num,):
         #fn;ナイフの画像パス、xy;ナイフを描画する位置が入ったタプル、y_list;ナイフ画像の高さを表す数値が入ったリスト、
         #index_num;y_listの中からランダムで数値を取り出すためのインデックス番号
         super().__init__() #superクラスの初期化
@@ -77,12 +99,15 @@ class knife_top(pg.sprite.Sprite):
     def update(self, screen):
         self.rect.centerx -= 2.5 #ナイフのx座標を-2.5だけ更新する
 
+
+
 def check_bound(sc_r, obj_r): 
     #画面内;+1/画面外;-1
     x, y = +1, +1                #Rect, Rect
     if obj_r.left < sc_r.left or sc_r.right < obj_r.right: x = -1 #画面外
     if obj_r.top < sc_r.top or sc_r.bottom < obj_r.bottom: y = -1 #画面外
     return x, y
+
 
 def main():
 
