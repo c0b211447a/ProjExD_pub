@@ -89,6 +89,7 @@ def main():
     count = 0 #ループを行った回数を保持する変数count
     chr_count = 3 #キャラクターのライフを表す変数chr_count
     distance = 0 #こうかとんが調理されるまでに耐え抜いた距離
+    god_time = 1000 #キャラクターの無敵時間を管理する変数を1000で初期化
     y_kulist = [] #下側のナイフの高さの候補が入ったリスト
     y_ktlist = [] #上側のナイフの高さの候補が入ったリスト
     rand_flg = True #上側ナイフと下側ナイフの高さの組み合わせをランダムに取り出す処理のフラグrand_flg
@@ -166,15 +167,20 @@ def main():
             score_flg = True #score_flgをtrueにする
 
         if score_flg: #score_flgがTrueなら
-            if pg.sprite.groupcollide(knife1, tori, True, True) or pg.sprite.groupcollide(knife2, tori, True, True):
-                #もしknife1グループとtoriグループもしくはknife2グループとtoriグループが接触していた ら
-                #両グループの接触しているspriteをGroupから削除して
-                chr_count -= 1 #キャラクターのライフを1だけ減らす
+            if god_time < 1000: #god_timeが1000未満であれば
+                god_time += 1 #god_timeを1ずつ更新する
 
-                if chr_count == 2: #キャラクターのライフが2のとき
-                    tori.add(character1('fig/4.png', 0.5, (200, 450))) #あらたに'fig/4.png'の画像をtoriグループに加える
-                if chr_count == 1: #キャラクターのライフが1のとき
-                    tori.add(character1('fig/5.png', 0.20, (200, 450))) #あらたに'fig/5.png'の画像をtoriグループに加える
+            elif distance == 0 or god_time == 1000: #distanceが0もしくはgod_timeが1000なら
+                if pg.sprite.groupcollide(knife1, tori, True, True) or pg.sprite.groupcollide(knife2, tori, True, True):
+                    #もしknife1グループとtoriグループもしくはknife2グループとtoriグループが接触していた ら
+                    #両グループの接触しているspriteをGroupから削除して
+                    chr_count -= 1 #キャラクターのライフを1だけ減らす
+                    god_time = 1 #god_timeを1に設定する
+
+                    if chr_count == 2: #キャラクターのライフが2のとき
+                        tori.add(character1('fig/4.png', 0.5, (200, 450))) #あらたに'fig/4.png'の画像をtoriグループに加える
+                    if chr_count == 1: #キャラクターのライフが1のとき
+                        tori.add(character1('fig/5.png', 0.20, (200, 450))) #あらたに'fig/5.png'の画像をtoriグループに加える
 
             if chr_count == 0: #キャラクターのライフが0のとき
                 tori_flg = False #tori_flgをFalseにする
@@ -183,10 +189,8 @@ def main():
                 screen.disp.blit(txt, (1600/2-250, 900/2-25)) #txtを位置(1600/2-250, 900/2-25)に描画する
                 txt = font.render('Press SPACE to restart', True, (0, 0, 0)) #'Press SPACE to restart'を黑で描画するという情報を保持した変数txt
                 screen.disp.blit(txt, (1600/2-250, 900/2+25)) #txtを位置(1600/2-250, 900/2+25)に描画する
-
                 if key_states[pg.K_SPACE]: #もしkey_statesの中の「スペースキーが押された」がTrueなら
                     main() #ゲームをリセットして再スタートする
-
             else: #キャラクターのライフが0以外の時
                 txt = font.render(f'{distance}m', True, (0, 0, 0)) #'{distance}m'を黑で描写するという情報を保持した変数txt
                 screen.disp.blit(txt, (50, 50)) #txtを位置(50, 50)に描画する          
